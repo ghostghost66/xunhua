@@ -1,0 +1,905 @@
+﻿<Page x:Class="IndustrialMaterials.DateA"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	  xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      WindowTitle="DateA">
+
+	<Page.Resources>
+		<!--静态资源-->
+		<ImageBrush x:Key="leftImage" ImageSource="/IndustrialMaterials;component/images/leftImage.png"/>
+		<ImageBrush x:Key="leftImageSub" ImageSource="/IndustrialMaterials;component/images/leftImageSub.png"/>
+		<ImageBrush x:Key="topImage" ImageSource="/IndustrialMaterials;component/images/topImage.png"/>
+
+		<!--下拉列表样式-->
+		<Style x:Key="ToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+			<Setter Property="Height" Value="80" />
+			<Setter Property="HorizontalContentAlignment" Value="Right"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Padding" Value="10 10"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Grid>
+							<Border x:Name="border2"   Background="{TemplateBinding Background}"  
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                     Margin="{TemplateBinding Padding}" 
+                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+								<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                     Margin="{TemplateBinding Padding}" 
+                     RecognizesAccessKey="True" 
+                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							</Border>
+						</Grid>
+
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsPressed" Value="true">
+								<Setter Property="Background" Value="#FFd2e7f4" />
+							</Trigger>
+							<Trigger Property="IsChecked" Value="true">
+								<Setter Property="Background" TargetName="border2" Value="{StaticResource ResourceKey=leftImage}"/>
+							</Trigger>
+							<Trigger Property="IsChecked" Value="false">
+								<Setter Property="Background" TargetName="border2" Value="#191E36"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Foreground" Value="White"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style x:Key="ExpanderStyle" TargetType="{x:Type Expander}">
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Expander}">
+						<DockPanel>
+							<ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" 
+                                              ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" 
+                                              Content="{TemplateBinding Header}" DockPanel.Dock="Top" 
+                                              Foreground="{TemplateBinding Foreground}" 
+                                              FontWeight="{TemplateBinding FontWeight}" 
+                                              FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}" 
+                                              FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" 
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource 
+                                    TemplatedParent}}" Margin="1" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}"
+                                              Style="{StaticResource ToggleButtonStyle}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							<ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Left" Focusable="false" 
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  Margin="{TemplateBinding Padding}" Visibility="Collapsed" 
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+						</DockPanel>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsExpanded" Value="true">
+								<Setter Property="Visibility" TargetName="ExpandSite" Value="Visible"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<!--顶部单选按钮样式-->
+		<Style x:Key="RadioButtonStyle" TargetType="{x:Type RadioButton}">
+			<Setter Property="Width" Value="180"/>
+			<Setter Property="FontSize" Value="22"/>
+			<Setter Property="Foreground" Value="#4B8EC4"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="MinHeight" Value="50"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type RadioButton}">
+						<Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+							<Border x:Name="border2"/>
+							<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}" Grid.Column="1" 
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="HasContent" Value="True">
+								<Setter Property="FocusVisualStyle">
+									<Setter.Value>
+										<Style>
+											<Setter Property="Control.Template">
+												<Setter.Value>
+													<ControlTemplate>
+														<Rectangle Margin="14,0,0,0" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</Setter.Value>
+								</Setter>
+								<Setter Property="Padding" Value="4,-1,0,0"/>
+							</Trigger>
+							<Trigger Property="IsChecked" Value="{x:Null}"/>
+
+							<Trigger Property="IsChecked" Value="true">
+								<Setter Property="Foreground" Value="White"/>
+								<Setter Property="Background" TargetName="border2" Value="{StaticResource ResourceKey=topImage}">
+									<!--<Setter.Value>
+                                        <ImageBrush ImageSource="./images/back.png" />
+                                    </Setter.Value>-->
+								</Setter>
+							</Trigger>
+							<Trigger Property="IsChecked" Value="false">
+								<Setter Property="Background" TargetName="border2" Value="Transparent"/>
+								<Setter Property="Foreground" Value="#4B8EC4"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<!--左侧下拉列表明细单选按钮样式-->
+		<Style x:Key="RadioMiniButtonStyle" TargetType="{x:Type RadioButton}">
+			<Setter Property="Margin" Value="5 5 1 5"/>
+			<Setter Property="FontSize" Value="22"/>
+			<Setter Property="Foreground" Value="#4B8EC4"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Background" Value="#101F3F"/>
+			<Setter Property="MinHeight" Value="50"/>
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type RadioButton}">
+						<Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+							<Border x:Name="border2"/>
+							<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}" 
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="HasContent" Value="True">
+								<Setter Property="FocusVisualStyle">
+									<Setter.Value>
+										<Style>
+											<Setter Property="Control.Template">
+												<Setter.Value>
+													<ControlTemplate>
+														<Rectangle Margin="14,0,0,0" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</Setter.Value>
+								</Setter>
+								<Setter Property="Padding" Value="4,-1,0,0"/>
+							</Trigger>
+							<Trigger Property="IsChecked" Value="{x:Null}"/>
+
+							<Trigger Property="IsChecked" Value="true">
+								<Setter Property="Foreground" Value="White"/>
+								<Setter Property="Background" TargetName="border2" Value="{StaticResource ResourceKey=leftImageSub}">
+									<!--<Setter.Value>
+                                        <ImageBrush ImageSource="./images/back.png" />
+                                    </Setter.Value>-->
+								</Setter>
+							</Trigger>
+
+							<Trigger Property="IsChecked" Value="false">
+								<Setter Property="Background" TargetName="border2" Value="#101F3F"/>
+								<Setter Property="Foreground" Value="#4B8EC4"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+	</Page.Resources>
+	<Grid Background="#0A0C22">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="80"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="300"/>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="300"/>
+		</Grid.ColumnDefinitions>
+
+		<Border Grid.Column="2" Grid.Row="1" BorderBrush="#121F40" BorderThickness="1 1 0 0">
+			<Border.Background>
+				<ImageBrush ImageSource="images/rightImage.png"/>
+			</Border.Background>
+		</Border>
+		<Border Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#121F40" BorderThickness="1 0 1 1">
+			<Border.Background>
+				<ImageBrush ImageSource="images/topback.png"/>
+			</Border.Background>
+		</Border>
+		<Border BorderThickness="1 1 1 0"  BorderBrush="#121F40"/>
+		<Border Grid.Row="1" BorderThickness="1"  BorderBrush="#121F40">
+			<Border.Background>
+				<ImageBrush ImageSource="images/leftback.png"/>
+			</Border.Background>
+		</Border>
+
+		<!--标题-->
+		<TextBlock Text="&#xe612; 巡华智能云平台" Foreground="White" 
+                   FontFamily="fonts/#iconfont"
+                   FontSize="26" VerticalAlignment="Center" HorizontalAlignment="Center">
+			<TextBlock.Effect>
+				<DropShadowEffect Color="#7EFFFF"  Direction="0" ShadowDepth="0"/>
+			</TextBlock.Effect>
+		</TextBlock>
+
+		<!--左侧下拉列表-->
+		<StackPanel  Grid.Row="1" Margin="10">
+			<Expander Style="{DynamicResource ExpanderStyle}">
+				<Expander.Header>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" Height="80">
+						<TextBlock Text="&#xe701;" FontFamily="../fonts/#iconfont" VerticalAlignment="Center" FontSize="25" Foreground="White" />
+						<StackPanel Margin="15 0 0 0" VerticalAlignment="Center">
+							<TextBlock Text="全景视图" FontSize="20" Foreground="White"/>
+							<TextBlock Text="Panoramic view" FontSize="15" Foreground="White"/>
+						</StackPanel>
+					</StackPanel>
+				</Expander.Header>
+				<Expander.Content>
+					<StackPanel>
+						<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240" Margin="5 10 1 5"
+                                 Content="全景预览" Foreground="White" FontSize="18"  />
+						<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240"
+                                 Content="路线设置" Foreground="White" FontSize="18" />
+						<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240"
+                                 Content="查看模型" Foreground="White" FontSize="18" />
+					</StackPanel>
+				</Expander.Content>
+			</Expander>
+
+			<Expander Style="{DynamicResource ExpanderStyle}" Margin="0 10 0 0">
+				<Expander.Header>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" Height="80">
+						<TextBlock  Text="&#xe6f5;" FontFamily="../fonts/#iconfont"  VerticalAlignment="Center" FontSize="25" Foreground="White" 
+									Margin="-28 0 0 0"/>
+						<StackPanel Margin="15 0 0 0" VerticalAlignment="Center">
+							<TextBlock Text="数据视图" FontSize="20" Foreground="White"/>
+							<TextBlock Text="Date View" FontSize="15" Foreground="White"/>
+						</StackPanel>
+					</StackPanel>
+				</Expander.Header>
+				<StackPanel>
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240" Margin="5 10 1 5"
+                                 Content="数据中心" Foreground="White" FontSize="18" />
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240"
+                                 Content="历史数据" Foreground="White" FontSize="18" />
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240"
+                                 Content="进入数据库" Foreground="White" FontSize="18" />
+				</StackPanel>
+			</Expander>
+
+			<Expander Style="{DynamicResource ExpanderStyle}" Margin="0 10 0 0">
+				<Expander.Header>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" Height="80">
+						<TextBlock  Text="&#xe6e7;" Margin="0 0 0 0" FontFamily="../fonts/#iconfont"  VerticalAlignment="Center" FontSize="25" Foreground="White" />
+						<StackPanel Margin="18 0 0 0" VerticalAlignment="Center">
+							<TextBlock Text="音波视图" FontSize="20" Foreground="White"/>
+							<TextBlock Text="voicewave View" FontSize="15" Foreground="White"/>
+						</StackPanel>
+					</StackPanel>
+				</Expander.Header>
+				<StackPanel>
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240" Margin="5 10 1 5"
+                                 Content="音波分析" Foreground="White" FontSize="18" />
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240"
+                                 Content="风险预警" Foreground="White" FontSize="18" />
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240"
+                                 Content="报警设置" Foreground="White" FontSize="18" />
+				</StackPanel>
+			</Expander>
+
+			<Expander Style="{DynamicResource ExpanderStyle}" Margin="0 10 0 0">
+				<Expander.Header>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" Height="80">
+						<TextBlock  Text="&#xe607;" Margin="-48 0 0 0" FontFamily="../fonts/#iconfont"  VerticalAlignment="Center" FontSize="25" Foreground="White" />
+						<StackPanel Margin="1 0 0 0" VerticalAlignment="Center">
+							<TextBlock Text="设置" FontSize="20" Foreground="White"/>
+							<TextBlock Text="Settings" FontSize="15" Foreground="White"/>
+						</StackPanel>
+					</StackPanel>
+				</Expander.Header>
+				<StackPanel>
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240" Margin="5 10 1 5"
+                                 Content="机器人参数" Foreground="White" FontSize="18" />
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240"
+                                 Content="软件参数" Foreground="White" FontSize="18" />
+					<RadioButton Style="{StaticResource RadioMiniButtonStyle}" Height="40" Width="240"
+                                 Content="个性化设置" Foreground="White" FontSize="18" />
+				</StackPanel>
+			</Expander>
+
+		</StackPanel>
+
+
+
+		<!--按钮-->
+		<StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
+			<Button  Foreground="#9A9CA7" FontSize="18" Width="120" Height="50" 
+                    Margin="10 0 10 0"  BorderThickness="0">
+				<Button.Background>
+					<ImageBrush ImageSource="images/buttonImage.png"/>
+				</Button.Background>
+				<Button.Content>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="&#xe62e;" VerticalAlignment="Center" FontFamily="fonts/#iconfont"/>
+						<TextBlock Text="登录" Margin="5 0 0 0"/>
+					</StackPanel>
+				</Button.Content>
+			</Button>
+			<Button  Foreground="#9A9CA7" FontSize="18" 
+                    Width="120" Height="50" BorderThickness="0">
+				<Button.Background>
+					<ImageBrush ImageSource="images/buttonImage.png"/>
+				</Button.Background>
+				<Button.Content>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="&#xe60d;" VerticalAlignment="Center" FontFamily="fonts/#iconfont"/>
+						<TextBlock Text="退出" Margin="5 0 0 0"/>
+					</StackPanel>
+				</Button.Content>
+			</Button>
+		</StackPanel>
+		<!--右侧显示区域-->
+		<StackPanel Grid.Row="1" Grid.Column="2">
+
+			<StackPanel Orientation="Horizontal"  Margin="0 15 0 0" Height="40">
+				<StackPanel.Background>
+					<ImageBrush ImageSource="images/timeback.png"/>
+				</StackPanel.Background>
+				<TextBlock Text="&#xe72a;  2020-07-21 12:35:02" VerticalAlignment="Center"
+                           FontFamily="fonts/#iconfont"
+                           Margin="15 0 0 0" Foreground="#9A9CA7" FontSize="22"/>
+				<Image Source="images/drop.png" Width="30" Height="30" Margin="10 0 0 0"/>
+			</StackPanel>
+
+			<TextBlock Text="电池箱体" Foreground="White" FontSize="22" Margin="15 10 0 0"/>
+			<TextBlock Text="编号:C5041" Foreground="#9A9CA7" Margin="15 5 0 0"/>
+
+			<Grid Margin="0 15 0 0" Height="130">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<Grid Background="Transparent" Width="100" Height="100">
+					<Ellipse Stroke="Gray" StrokeThickness="12"/>
+					<Ellipse  StrokeThickness="12" StrokeDashArray="11.5,1000" 
+                  RenderTransformOrigin="0.5,0.5">
+						<Ellipse.Stroke>
+							<LinearGradientBrush  StartPoint="0.5,0.5" EndPoint="0,1">
+								<GradientStop Offset="1" Color="#1CEAF9"/>
+								<GradientStop Offset="0" Color="#0A96E4"/>
+							</LinearGradientBrush>
+						</Ellipse.Stroke>
+						<Ellipse.Effect>
+							<DropShadowEffect Color="WhiteSmoke" Opacity="1" BlurRadius="8" ShadowDepth="0"/>
+						</Ellipse.Effect>
+
+						<Ellipse.RenderTransform>
+							<RotateTransform Angle="-90"/>
+						</Ellipse.RenderTransform>
+					</Ellipse>
+					<TextBlock Foreground="White" 
+                               Text="50%"
+                               FontSize="25" HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+						<TextBlock.Effect>
+							<DropShadowEffect Color="White" ShadowDepth="0" BlurRadius="6"/>
+						</TextBlock.Effect>
+					</TextBlock>
+				</Grid>
+
+				<UniformGrid Grid.Column="1" Rows="2">
+					<StackPanel VerticalAlignment="Center">
+						<TextBlock Text="7" Foreground="White" FontSize="30" FontWeight="Bold">
+							<TextBlock.Effect>
+								<DropShadowEffect Color="White" ShadowDepth="0" BlurRadius="6"/>
+							</TextBlock.Effect>
+						</TextBlock>
+						<TextBlock Text="日实际巡检次数" Foreground="#9A9CA7"/>
+					</StackPanel>
+
+					<StackPanel VerticalAlignment="Center">
+						<TextBlock Text="12" Foreground="White" FontSize="20"/>
+						<TextBlock Text="日计划巡检次数" Foreground="#9A9CA7"/>
+					</StackPanel>
+
+				</UniformGrid>
+
+			</Grid>
+
+			<TextBlock Text="完成进度" Foreground="#9A9CA7" Margin="10 5 0 0"/>
+			<UniformGrid Margin="10 5 0 0" VerticalAlignment="Center" Height="25">
+				<TextBlock Text="50%" Foreground="White" />
+			</UniformGrid>
+
+			<Rectangle Height="3" Margin="10 0 10 0" >
+				<Rectangle.Fill>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="0.9,0">
+						<GradientStop Color="#ED2163" Offset="0.25" />
+						<GradientStop Color="#9A9CA7" Offset="0.75" />
+					</LinearGradientBrush>
+				</Rectangle.Fill>
+			</Rectangle>
+
+		</StackPanel>
+
+		<Image Source="demo.png" Grid.Row="1" Grid.Column="1" Stretch="Fill"/>
+		<Grid Grid.Row="1" Grid.Column="1" Background="#121F40" >
+			<Grid.RowDefinitions>
+				<RowDefinition Height="90"/>
+				<RowDefinition Height="250"/>
+				<RowDefinition/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<TextBlock Text="数据分析" FontSize="30" FontWeight="Light" Margin="50 0 0 0" VerticalAlignment="Center" Foreground="White"/>
+
+			<UniformGrid Grid.Row="1" Columns="4" Margin="0 0 0 0">
+				<Border Background="#121F40" Margin="10 40 10 40" CornerRadius="3">
+					<Grid >
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1.7*"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+
+						<Button Width="100" Height="100" Panel.ZIndex="1" HorizontalAlignment="Left"  materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                VerticalAlignment="Top" Margin="20 -20 0 0" Background="#92C202" BorderBrush="#92C202">
+							<TextBlock Text="&#xe61e;" FontSize="50" FontFamily="../fonts/#iconfont" Foreground="White"/>
+						</Button>
+
+
+						<StackPanel HorizontalAlignment="Right" Margin="0 10 20 0">
+							<TextBlock Text="温度" FontSize="22" HorizontalAlignment="Right" Foreground="White" FontWeight="Light"/>
+							<TextBlock Text="36.0℃" FontSize="32" Foreground="White"/>
+						</StackPanel>
+						<Border BorderThickness="0 0 0 1" Margin="20 0 20 0" VerticalAlignment="Bottom" BorderBrush="#E3E3E3"/>
+						<TextBlock Grid.Row="1" Text="巡华云支持" Foreground="White" Margin="20 0 0 0" FontWeight="Light" VerticalAlignment="Center" FontSize="16"/>
+
+					</Grid>
+				</Border>
+
+				<Border Background="#121F40" Margin="10 40 10 40" CornerRadius="3">
+					<Grid >
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1.7*"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+
+						<Button Width="100" Height="100" Panel.ZIndex="1" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                VerticalAlignment="Top" Margin="20 -20 0 0" Background="#F8682C" BorderBrush="#F8682C">
+							<TextBlock Text="&#xe60f;" FontSize="50" FontFamily="../fonts/#iconfont" Foreground="White"/>
+						</Button>
+
+						<StackPanel HorizontalAlignment="Right" Margin="0 10 20 0">
+							<TextBlock Text="湿度" FontSize="22" HorizontalAlignment="Right" Foreground="White" FontWeight="Light"/>
+							<TextBlock Text="29%" FontSize="32" HorizontalAlignment="Right" Foreground="White"/>
+						</StackPanel>
+
+						<Border BorderThickness="0 0 0 1" Margin="20 0 20 0" VerticalAlignment="Bottom" BorderBrush="White"/>
+						<TextBlock Grid.Row="1" Text="巡华云支持" Foreground="White" Margin="20 0 0 0" FontWeight="Light" VerticalAlignment="Center" FontSize="16"/>
+					</Grid>
+				</Border>
+
+				<Border Background="#121F40" Margin="10 40 10 40" CornerRadius="3">
+					<Grid >
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1.7*"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+
+						<Button Width="100" Height="100" Panel.ZIndex="1" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                VerticalAlignment="Top" Margin="20 -20 0 0" Background="#00B2EE" BorderBrush="#00B2EE">
+							<TextBlock Text="&#xe632;" FontSize="50" FontFamily="../fonts/#iconfont" Foreground="White" Margin="8 30 10 10"/>
+						</Button>
+
+						<StackPanel HorizontalAlignment="Right" Margin="0 10 20 0">
+							<TextBlock Text="压强" FontSize="22" HorizontalAlignment="Right" Foreground="White" FontWeight="Light"/>
+							<TextBlock Text="350Kpa" FontSize="32" HorizontalAlignment="Right" Foreground="White"/>
+						</StackPanel>
+
+						<Border BorderThickness="0 0 0 1" Margin="20 0 20 0" VerticalAlignment="Bottom" BorderBrush="White"/>
+						<TextBlock Grid.Row="1" Text="巡华云支持" Foreground="White" Margin="20 0 0 0" FontWeight="Light" VerticalAlignment="Center" FontSize="16"/>
+
+					</Grid>
+				</Border>
+
+				<Border Background="#121F40" Margin="10 40 10 40" CornerRadius="3">
+					<Grid >
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1.7*"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+
+						<Button Width="100" Height="100" Panel.ZIndex="1" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                VerticalAlignment="Top" Margin="20 -20 0 0" Background="#FEC103" BorderBrush="#FEC103">
+							<TextBlock Text="&#xe63d;" FontSize="50" FontFamily="../fonts/#iconfont" Foreground="White" Margin="-8 0 0 0" />
+						</Button>
+
+						<StackPanel HorizontalAlignment="Right" Margin="0 10 20 0">
+							<TextBlock Text="醇类物质" FontSize="22" HorizontalAlignment="Right" Foreground="White" FontWeight="Light" />
+							<TextBlock Text="3.1μm/m" FontSize="32" HorizontalAlignment="Right" Foreground="White"/>
+						</StackPanel>
+
+						<Border BorderThickness="0 0 0 1" Margin="20 0 20 0" VerticalAlignment="Bottom" BorderBrush="#E3E3E3"/>
+						<TextBlock Grid.Row="1" Text="巡华云支持" Foreground="White" Margin="20 0 0 0" FontWeight="Light" VerticalAlignment="Center" FontSize="16"/>
+
+					</Grid>
+				</Border>
+
+
+			</UniformGrid>
+
+			<UniformGrid Grid.Row="2" Columns="3">
+				<Border Background="#121F40" Margin="20 40 20 40" CornerRadius="3">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1.7*"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+
+						<Grid Panel.ZIndex="1" Margin="20 -20 20 0">
+							<Grid.Effect>
+								<DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2" ShadowDepth="1"/>
+							</Grid.Effect>
+							<Grid.Resources>
+								<Style TargetType="lvc:ColumnSeries">
+									<Setter Property="StrokeThickness" Value="0"></Setter>
+									<Setter Property="Stroke" Value="White"></Setter>
+									<Setter Property="Fill" Value="White"></Setter>
+									<Setter Property="MaxColumnWidth" Value="5"></Setter>
+								</Style>
+								<Style TargetType="lvc:Axis">
+									<Setter Property="FontSize" Value="12"></Setter>
+									<Setter Property="Foreground" Value="#64FFFFFF"></Setter>
+									<Style.Triggers>
+										<Trigger Property="AxisOrientation" Value="Y">
+											<Setter Property="IsMerged" Value="True"></Setter>
+											<Setter Property="MaxValue" Value="10"></Setter>
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+								<Style TargetType="lvc:Separator">
+									<Setter Property="StrokeThickness" Value="1"></Setter>
+									<Setter Property="Stroke" Value="#4BFFFFFF"></Setter>
+									<Style.Triggers>
+										<Trigger Property="AxisOrientation" Value="X">
+											<Setter Property="IsEnabled" Value="False"></Setter>
+											<Setter Property="Step" Value="1"></Setter>
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+							</Grid.Resources>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"></RowDefinition>
+								<RowDefinition Height="Auto"></RowDefinition>
+								<RowDefinition Height="0.5*"></RowDefinition>
+							</Grid.RowDefinitions>
+							<Border x:Name="Border2" Grid.Row="0" Grid.RowSpan="4" CornerRadius="5" Background="White" />
+							<Border  Grid.RowSpan="3" Background="#51AB54" ></Border>
+							<!--<lvc:CartesianChart  Grid.Row="2" Margin="10, 10, 10, 20"  Hoverable="False" DataTooltip="{x:Null}">
+                                <lvc:CartesianChart.Series>
+                                    <lvc:ColumnSeries Values="20,10,8,6,1,5,7,3,6,3"/>
+                                </lvc:CartesianChart.Series>
+                            </lvc:CartesianChart>-->
+
+
+
+
+							<lvc:CartesianChart  Grid.Row="2" Margin="10, 10, 10, 0"  Hoverable="False" DataTooltip="{x:Null}">
+								<lvc:CartesianChart.AxisY >
+									<lvc:Axis ShowLabels="True">
+										<lvc:Axis.Separator>
+											<lvc:Separator StrokeThickness="1" Stroke="#4BFFFFFF"  />
+										</lvc:Axis.Separator>
+									</lvc:Axis>
+								</lvc:CartesianChart.AxisY>
+
+								<lvc:CartesianChart.AxisX>
+									<lvc:Axis Title="Time"  LabelsRotation="1" Labels="8:00,9:00,10:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00" ShowLabels="True" >
+										<lvc:Axis.Separator>
+											<lvc:Separator StrokeThickness="1" Stroke="#4BFFFFFF"  />
+										</lvc:Axis.Separator>
+									</lvc:Axis>
+								</lvc:CartesianChart.AxisX>
+
+								<lvc:CartesianChart.Series  >
+									<lvc:ColumnSeries Values="1,10,8,6,1,5,7,3,6,3"  />
+								</lvc:CartesianChart.Series>
+							</lvc:CartesianChart>
+
+
+
+
+						</Grid>
+
+						<Grid Grid.Row="1" Margin="30 0 0 0">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="1.2*"/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<TextBlock  Text="温度" VerticalAlignment="Bottom" Foreground="White"  FontWeight="Light"  FontSize="16"/>
+							<Border Grid.Row="1" BorderThickness="0 0 0 1" Margin="0 0 20 0" VerticalAlignment="Bottom" BorderBrush="#E3E3E3"/>
+							<TextBlock Grid.Row="1" Text="巡华云支持" Foreground="White" FontWeight="Light" VerticalAlignment="Center" FontSize="12"/>
+							<TextBlock Grid.Row="2" Text="updated 4 minutes ago" Foreground="White"  FontWeight="Light" VerticalAlignment="Center" FontSize="12"/>
+						</Grid>
+
+					</Grid>
+				</Border>
+
+				<Border Background="#121F40" Margin="20 40 20 40" CornerRadius="3">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1.7*"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+
+						<Grid Panel.ZIndex="1" Margin="20 -20 20 0">
+							<Grid.Effect>
+								<DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2" ShadowDepth="1"/>
+							</Grid.Effect>
+							<Grid.Resources>
+								<Style TargetType="lvc:ColumnSeries">
+									<Setter Property="StrokeThickness" Value="0"></Setter>
+									<Setter Property="Stroke" Value="White"></Setter>
+									<Setter Property="Fill" Value="White"></Setter>
+									<Setter Property="MaxColumnWidth" Value="5"></Setter>
+								</Style>
+								<Style TargetType="lvc:Axis">
+									<Setter Property="FontSize" Value="12"></Setter>
+									<Setter Property="Foreground" Value="#64FFFFFF"></Setter>
+									<Style.Triggers>
+										<Trigger Property="AxisOrientation" Value="Y">
+											<Setter Property="IsMerged" Value="True"></Setter>
+											<Setter Property="MaxValue" Value="10"></Setter>
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+								<Style TargetType="lvc:Separator">
+									<Setter Property="StrokeThickness" Value="1"></Setter>
+									<Setter Property="Stroke" Value="#4BFFFFFF"></Setter>
+									<Style.Triggers>
+										<Trigger Property="AxisOrientation" Value="X">
+											<Setter Property="IsEnabled" Value="False"></Setter>
+											<Setter Property="Step" Value="1"></Setter>
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+							</Grid.Resources>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"></RowDefinition>
+								<RowDefinition Height="Auto"></RowDefinition>
+								<RowDefinition Height=".50*"></RowDefinition>
+							</Grid.RowDefinitions>
+							<Border  Grid.Row="0" Grid.RowSpan="4" CornerRadius="5" Background="White" />
+							<Border Grid.Row="0" Grid.RowSpan="3" Background="#FD950E" ></Border>
+
+							<lvc:CartesianChart  Grid.Row="2" Margin="10, 0, 10, 0"  Hoverable="False" DataTooltip="{x:Null}">
+								<lvc:CartesianChart.Series>
+									<lvc:LineSeries Stroke="White" Values="5,9,8,6,1,5,7,3,6,3"/>
+								</lvc:CartesianChart.Series>
+								<lvc:CartesianChart.AxisX>
+									<lvc:Axis Title="Time"  LabelsRotation="1" Labels="8:00,9:00,10:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00" ShowLabels="True" >
+										<lvc:Axis.Separator>
+											<lvc:Separator StrokeThickness="1" Stroke="#4BFFFFFF"  />
+										</lvc:Axis.Separator>
+									</lvc:Axis>
+								</lvc:CartesianChart.AxisX>
+							</lvc:CartesianChart>
+						</Grid>
+
+						<Grid Grid.Row="1" Margin="30 0 0 0">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="1.2*"/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<TextBlock  Text="湿度" VerticalAlignment="Bottom" Foreground="White"  FontWeight="Light"  FontSize="16"/>
+							<Border Grid.Row="1" BorderThickness="0 0 0 1" Margin="0 0 20 0" VerticalAlignment="Bottom" BorderBrush="#E3E3E3"/>
+							<TextBlock Grid.Row="1" Text="巡华云支持" Foreground="White" FontWeight="Light" VerticalAlignment="Center" FontSize="12"/>
+							<TextBlock Grid.Row="2" Text="updated 4 minutes ago" Foreground="White"  FontWeight="Light" VerticalAlignment="Center" FontSize="12"/>
+						</Grid>
+					</Grid>
+				</Border>
+
+				<Border Background="#121F40" Margin="20 40 20 40" CornerRadius="3">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1.7*"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+
+						<Grid Panel.ZIndex="1" Margin="20 -20 20 0">
+							<Grid.Effect>
+								<DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2" ShadowDepth="1"/>
+							</Grid.Effect>
+							<Grid.Resources>
+								<Style TargetType="lvc:ColumnSeries">
+									<Setter Property="StrokeThickness" Value="0"></Setter>
+									<Setter Property="Stroke" Value="White"></Setter>
+									<Setter Property="Fill" Value="White"></Setter>
+									<Setter Property="MaxColumnWidth" Value="5"></Setter>
+								</Style>
+								<Style TargetType="lvc:Axis">
+									<Setter Property="FontSize" Value="12"></Setter>
+									<Setter Property="Foreground" Value="#64FFFFFF"></Setter>
+									<Style.Triggers>
+										<Trigger Property="AxisOrientation" Value="Y">
+											<Setter Property="IsMerged" Value="True"></Setter>
+											<Setter Property="MaxValue" Value="10"></Setter>
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+								<Style TargetType="lvc:Separator">
+									<Setter Property="StrokeThickness" Value="1"></Setter>
+									<Setter Property="Stroke" Value="#4BFFFFFF"></Setter>
+									<Style.Triggers>
+										<Trigger Property="AxisOrientation" Value="X">
+											<Setter Property="IsEnabled" Value="False"></Setter>
+											<Setter Property="Step" Value="1"></Setter>
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+							</Grid.Resources>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"></RowDefinition>
+								<RowDefinition Height="Auto"></RowDefinition>
+								<RowDefinition Height=".50*"></RowDefinition>
+							</Grid.RowDefinitions>
+							<Border  Grid.Row="0" Grid.RowSpan="4" CornerRadius="5" Background="White" />
+							<Border Grid.Row="0" Grid.RowSpan="3" Background="#E94543" ></Border>
+							<lvc:CartesianChart  Grid.Row="2" Margin="10, 0, 10, 0"  Hoverable="False" DataTooltip="{x:Null}">
+								<lvc:CartesianChart.Series>
+									<lvc:LineSeries Stroke="White" Values="5,9,8,6,1,5,7,3,6,3"/>
+								</lvc:CartesianChart.Series>
+								<lvc:CartesianChart.AxisX>
+									<lvc:Axis Title="Time"  LabelsRotation="1" Labels="8:00,9:00,10:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00" ShowLabels="True" >
+										<lvc:Axis.Separator>
+											<lvc:Separator StrokeThickness="1" Stroke="#4BFFFFFF"  />
+										</lvc:Axis.Separator>
+									</lvc:Axis>
+								</lvc:CartesianChart.AxisX>
+							</lvc:CartesianChart>
+						</Grid>
+
+						<Grid Grid.Row="1" Margin="30 0 0 0">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="1.2*"/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<TextBlock  Text="压强" VerticalAlignment="Bottom" Foreground="White"  FontWeight="Light"  FontSize="16"/>
+							<Border Grid.Row="1" BorderThickness="0 0 0 1" Margin="0 0 20 0" VerticalAlignment="Bottom" BorderBrush="#E3E3E3"/>
+							<TextBlock Grid.Row="1" Text="巡华云支持" Foreground="White" FontWeight="Light" VerticalAlignment="Center" FontSize="12"/>
+							<TextBlock Grid.Row="2" Text="updated 4 minutes ago" Foreground="White"  FontWeight="Light" VerticalAlignment="Center" FontSize="12"/>
+						</Grid>
+
+					</Grid>
+				</Border>
+
+
+			</UniformGrid>
+
+			<UniformGrid Grid.Row="3" Columns="2">
+				<Border Grid.Row="3" Background="#121F40" Margin="20 40 20 40" CornerRadius="3">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+							<RowDefinition Height="1.5*"/>
+						</Grid.RowDefinitions>
+						<Button Panel.ZIndex="1" Margin="20 -100 20 0" HorizontalContentAlignment="Left"
+                                  materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                Height="120" BorderBrush="#952CAD" Background="#952CAD">
+							<StackPanel>
+								<TextBlock Grid.Row="2" Text="有害气体①" Foreground="White"  FontWeight="Light" VerticalAlignment="Center" FontSize="26" Height="32"/>
+							</StackPanel>
+						</Button>
+
+						<Grid Grid.Row="1">
+							<UniformGrid Rows="4" Columns="4">
+								<TextBlock Text="序号" Foreground="#952CAD" FontSize="16" HorizontalAlignment="Center" />
+								<TextBlock Text="名称" Foreground="#952CAD" FontSize="16" HorizontalAlignment="Center"/>
+								<TextBlock Text="浓度" Foreground="#952CAD" FontSize="16" HorizontalAlignment="Center"/>
+								<TextBlock Text="危险程度" Foreground="#952CAD" FontSize="16" HorizontalAlignment="Center"/>
+
+								<TextBlock Text="1" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="硫化氢" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="7.9mg/m3" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="低" HorizontalAlignment="Center" Foreground="White"/>
+
+								<TextBlock Text="2" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="硫化醇" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="8.2mg/m3" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="低" HorizontalAlignment="Center" Foreground="White"/>
+
+								<TextBlock Text="3" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="二甲基硫醚" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="8.2mg/m3" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="低" HorizontalAlignment="Center" Foreground="White"/>
+							</UniformGrid>
+						</Grid>
+					</Grid>
+
+				</Border>
+
+				<Border Grid.Row="3" Background="#121F40" Margin="20 40 20 40" CornerRadius="3">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+							<RowDefinition Height="1.5*"/>
+						</Grid.RowDefinitions>
+						<Button Panel.ZIndex="1" Margin="20 -100 20 0"  HorizontalContentAlignment="Left"
+                                  materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                Height="120" BorderBrush="#FC940D" Background="#FC940D">
+							<StackPanel>
+								<TextBlock Grid.Row="2" Text="有害气体②" Foreground="White"  FontWeight="Light" VerticalAlignment="Center" FontSize="26" Height="31"/>
+							</StackPanel>
+						</Button>
+
+						<Grid Grid.Row="1">
+							<UniformGrid Rows="4" Columns="4">
+								<TextBlock Text="序号" Foreground="#FC940D" FontSize="16" HorizontalAlignment="Center"/>
+								<TextBlock Text="名称" Foreground="#FC940D" FontSize="16" HorizontalAlignment="Center"/>
+								<TextBlock Text="浓度" Foreground="#FC940D" FontSize="16" HorizontalAlignment="Center"/>
+								<TextBlock Text="危险程度" Foreground="#FC940D" FontSize="16" HorizontalAlignment="Center"/>
+
+								<TextBlock Text="1" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="一氧化氮" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="6.0ppm" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="低" HorizontalAlignment="Center" Foreground="White"/>
+
+								<TextBlock Text="2" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="二氧化氮" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="9.4ppm" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="低" HorizontalAlignment="Center" Foreground="White"/>
+
+								<TextBlock Text="3" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="三氧化二氮" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="8.1ppm" HorizontalAlignment="Center" Foreground="White"/>
+								<TextBlock Text="低" HorizontalAlignment="Center" Foreground="White"/>
+							</UniformGrid>
+						</Grid>
+					</Grid>
+				</Border>
+			</UniformGrid>
+
+
+		</Grid>
+	</Grid>
+</Page>
